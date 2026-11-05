@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="唐昊冉 - 描述性物理海洋学课堂笔记与 ENSO 故事会">
+<title>描述性物理海洋学 | 唐昊冉的个人学习档案</title>
+<style>
+/* ================= 核心变量与重置 ================= */
+:root {
+  --bg-main: #f4f7f9; 
+  --bg-deep: #071a28; 
+  --bg-card: #ffffff;
+  --bg-card-blue: #eef5f9;
+  --ink: #1e293b;
+  --ink-light: #475569;
+  --muted: #64748b;
+  --line: #cbd5e1;
+  --primary: #0ea5e9;
+  --primary-dark: #0369a1;
+  --accent: #f59e0b;
+  --danger: #ef4444;
+  --radius: 12px;
+  --shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--ink);
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+/* ================= 导航栏 ================= */
+header {
+  background: var(--bg-deep);
+  color: white;
+  padding: 15px 0;
+  position: sticky; top: 0; z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.nav-container {
+  max-width: 1200px; margin: 0 auto; padding: 0 20px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.logo { font-size: 20px; font-weight: 800; letter-spacing: 1px; display: flex; align-items: center; gap: 10px;}
+.logo span { font-size: 13px; font-weight: 400; color: #94a3b8; letter-spacing: 0; }
+.nav-links { display: flex; gap: 30px; }
+.nav-links a { color: #cbd5e1; text-decoration: none; font-size: 15px; font-weight: 500; transition: 0.3s; }
+.nav-links a:hover { color: var(--primary); }
+
+/* ================= Hero 头部 ================= */
+.hero {
+  background: linear-gradient(135deg, #071a28 0%, #0c344e 100%);
+  color: white; padding: 80px 20px;
+  text-align: center; border-bottom: 4px solid var(--primary);
+}
+.hero h1 { font-size: 42px; font-weight: 800; margin-bottom: 15px; letter-spacing: 1px; }
+.hero p { font-size: 18px; color: #94a3b8; max-width: 700px; margin: 0 auto; }
+
+/* ================= 布局容器 ================= */
+.container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+.section-title {
+  font-size: 32px; font-weight: 800; color: var(--bg-deep);
+  margin: 60px 0 30px; padding-bottom: 15px;
+  border-bottom: 2px solid #bae6fd;
+  display: flex; align-items: center; gap: 15px;
+}
+.section-title::before {
+  content: ''; display: block; width: 8px; height: 32px;
+  background: var(--primary); border-radius: 4px;
+}
+
+/* ================= 课堂笔记卡片 ================= */
+.lecture-card {
+  background: var(--bg-card); border-radius: var(--radius);
+  box-shadow: var(--shadow); margin-bottom: 50px;
+  border: 1px solid var(--line); overflow: hidden;
+}
+.lec-header {
+  background: var(--bg-card-blue); padding: 20px 25px;
+  border-bottom: 1px solid var(--line);
+  display: flex; justify-content: space-between; align-items: flex-end;
+}
+.lec-header h3 { font-size: 22px; color: var(--primary-dark); font-weight: 800; margin: 0; }
+.lec-header span { font-size: 14px; color: var(--muted); font-weight: 600; background: white; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--line);}
+.lec-body { padding: 25px; }
+
+.driver-box {
+  background: #f0fdf4; border-left: 4px solid #22c55e;
+  padding: 15px 20px; border-radius: 0 8px 8px 0;
+  font-size: 15.5px; color: #166534; margin-bottom: 25px;
+  font-weight: 500;
+}
+.note-content h4 { font-size: 18px; color: var(--bg-deep); margin: 20px 0 10px; }
+.note-content p { color: var(--ink-light); font-size: 15px; margin-bottom: 15px; text-align: justify; }
+.note-content ul { margin-left: 20px; margin-bottom: 20px; color: var(--ink-light); font-size: 15px; }
+.note-content li { margin-bottom: 8px; }
+
+.my-thoughts {
+  background: #fffbeb; border: 1px solid #fcd34d;
+  padding: 20px; border-radius: var(--radius);
+  margin: 25px 0; position: relative;
+}
+.my-thoughts::before {
+  content: '💡 我的思考'; position: absolute; top: -12px; left: 20px;
+  background: #f59e0b; color: white; font-size: 12px; font-weight: bold;
+  padding: 2px 10px; border-radius: 10px;
+}
+.my-thoughts p { color: #92400e; margin: 0; font-size: 15px; }
+
+/* ================= 出门票模块 ================= */
+.ticket-area {
+  background: #f8fafc; border: 1px dashed var(--primary);
+  border-radius: var(--radius); padding: 25px; margin-top: 35px;
+}
+.ticket-title {
+  color: var(--primary-dark); font-size: 18px; font-weight: 800;
+  margin-bottom: 15px; display: flex; align-items: center; gap: 8px;
+}
+.ticket-desc { font-size: 15px; color: var(--ink); margin-bottom: 20px; font-weight: 500; }
+.ticket-gallery {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;
+}
+.ticket-img-box {
+  background: white; border: 1px solid var(--line); border-radius: 8px;
+  overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+.ticket-img-box img {
+  width: 100%; height: 200px; object-fit: cover; display: block;
+  background: #e2e8f0; color: var(--muted); text-align: center; line-height: 200px; font-size: 14px;
+}
+.ticket-img-box p { padding: 12px; font-size: 13px; color: var(--muted); text-align: center; border-top: 1px solid var(--line); margin: 0; }
+.ticket-source { font-size: 13px; color: var(--muted); margin-top: 20px; padding-top: 15px; border-top: 1px dashed var(--line); }
+
+/* ================= 教材分析卡片 ================= */
+.textbook-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+.tb-card {
+  background: white; border-radius: var(--radius); border: 1px solid var(--line);
+  padding: 30px; box-shadow: var(--shadow);
+}
+.tb-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+.tb-badge {
+  background: var(--primary-dark); color: white; font-weight: 800;
+  font-size: 16px; padding: 8px 15px; border-radius: 8px;
+}
+.tb-header h3 { font-size: 20px; color: var(--bg-deep); margin: 0; }
+.tb-header p { font-size: 13px; color: var(--muted); margin: 0; }
+.tb-formula {
+  background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px;
+  padding: 15px; text-align: center; font-family: monospace; font-size: 16px;
+  color: #0f172a; margin-bottom: 20px; font-weight: bold;
+}
+.tb-section { margin-bottom: 20px; }
+.tb-section h4 { font-size: 16px; color: var(--primary-dark); margin-bottom: 8px; }
+.tb-section p { font-size: 14.5px; color: var(--ink-light); }
+.tb-image {
+  width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--line); margin: 15px 0;
+}
+
+/* ================= ENSO 故事会（深色沉浸式） ================= */
+.enso-wrapper {
+  background: #071a28; color: #e2e8f0; border-radius: var(--radius);
+  padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+.enso-header { text-align: center; margin-bottom: 40px; }
+.enso-header h2 { color: #38bdf8; font-size: 32px; margin-bottom: 10px; }
+.enso-header p { color: #94a3b8; font-size: 16px; max-width: 600px; margin: 0 auto; }
+
+.video-container {
+  width: 100%; border-radius: 12px; overflow: hidden;
+  border: 2px solid #1e293b; background: black;
+  margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.video-container video { width: 100%; display: block; }
+
+.enso-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+.canvas-box {
+  background: #0f172a; border: 1px solid #334155;
+  border-radius: 12px; overflow: hidden;
+}
+.canvas-box canvas { display: block; width: 100%; height: 350px; }
+.canvas-box p { background: #1e293b; color: #94a3b8; font-size: 13px; padding: 12px; text-align: center; margin: 0; border-top: 1px solid #334155; }
+
+.lab-controls {
+  background: #1e293b; padding: 25px; border-radius: 12px;
+  margin-top: 20px; border: 1px solid #334155;
+}
+.lab-controls label { display: flex; justify-content: space-between; color: #e2e8f0; font-weight: 700; margin-bottom: 15px; font-size: 16px; }
+input[type=range] { width: 100%; accent-color: #38bdf8; height: 6px; border-radius: 3px; }
+.lab-diagnostics { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; font-size: 14px; color: #94a3b8; }
+.lab-diagnostics span { color: #38bdf8; font-weight: bold; }
+
+/* ================= 免责声明 ================= */
+.disclaimer {
+  background: #fff1f2; border-left: 4px solid var(--danger);
+  padding: 30px; border-radius: 0 var(--radius) var(--radius) 0;
+  margin-top: 60px;
+}
+.disclaimer h3 { color: var(--danger); font-size: 20px; margin-bottom: 15px; }
+.disclaimer p { color: #9f1239; font-size: 14.5px; margin-bottom: 10px; }
+
+/* ================= 响应式 ================= */
+@media (max-width: 900px) {
+  .textbook-grid, .enso-grid, .ticket-gallery { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+  .hero h1 { font-size: 32px; }
+  .enso-wrapper { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- 导航栏 -->
+<header>
+  <div class="nav-container">
+    <div class="logo">描述性物理海洋 <span>唐昊冉 · 2026</span></div>
+    <nav class="nav-links">
+      <a href="#lectures">课堂笔记 (8讲)</a>
+      <a href="#textbook">教材分析</a>
+      <a href="#enso">故事会 (ENSO)</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <h1>从海水的性质，读到生命的繁盛</h1>
+  <p>八讲课堂实记、八章教材深度解析，以及一次关于厄尔尼诺与南方涛动的交互式探索。</p>
+</section>
+
+<div class="container">
+
+  <!-- ================= 模块一：课堂笔记 ================= -->
+  <h2 class="section-title" id="lectures">课堂笔记 (8讲)</h2>
+
+  <!-- 第1讲 -->
+  <article class="lecture-card">
+    <div class="lec-header">
+      <h3>第1讲：描述性物理海洋学是什么</h3>
+      <span>2026-09-17 · 教材第1章</span>
+    </div>
+    <div class="lec-body">
+      <div class="driver-box"><strong>驱动问题：</strong>海洋是一种不断运动的流体——我们怎样描述它，地球自转又在什么时候开始管事？</div>
+      <div class="note-content">
+        <h4>课堂内容</h4>
+        <p>描述性物理海洋学从观测和模式输出出发，尽可能定量地描述海水的运动与性质；动力物理海洋学则用理论和过程实验解释背后的机制。海洋现象跨越多达十个数量级的空间尺度（1 mm–10,000 km）和时间尺度（秒–千年）。</p>
+      </div>
+      <div class="my-thoughts">
+        <p>判断自转是否重要，先算 Rossby 数 Ro = U/(fL)。大洋环流 Ro ~ 10⁻³，地转近似很好；赤道、边界层和强摩擦处要重新检查。</p>
+      </div>
+
+      <!-- 第1周出门票 -->
+      <div class="ticket-area">
+        <div class="ticket-title">🎫 第1周出门票</div>
+        <div class="ticket-desc"><strong>本周记录：</strong>了解物理海洋学的发展背景，学习使用 AI 工具，制作自己的物理海洋学脑图，并确定故事会主题。</div>
+        <div class="note-content">
+          <p><strong>【知识详述】</strong>物理海洋学的核心在于建立从“观测现象”到“动力机制”的桥梁。描述性研究首先需要回答“在哪里、有多少、怎样变化”，这依赖于全球海洋观测系统（GOOS）以及卫星遥感、Argo浮标阵列等现代观测手段。从微小尺度的分子耗散（毫米级），到中尺度涡旋（百公里级），再到全球热盐环流（万公里级），跨越十个数量级的尺度意味着没有任何单一观测方案能同时满足所有需求。因此，理解海洋现象首先要明确其空间与时间尺度，例如通过计算罗斯贝数（Rossby Number, Ro）来判断地球自转产生的科里奥利力是否占据主导地位。</p>
+        </div>
+        <div class="ticket-source">本讲来源：Elsevier · Chapter 1 sample · Talley · Data analysis</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 第2讲 -->
+  <article class="lecture-card">
+    <div class="lec-header">
+      <h3>第2讲：海盆、海峡与地形</h3>
+      <span>2026-09-24 · 教材第2章</span>
+    </div>
+    <div class="lec-body">
+      <div class="driver-box"><strong>驱动问题：</strong>为什么海底地形不能只当作海流地图的背景？</div>
+      <div class="note-content">
+        <h4>课堂内容</h4>
+        <p>海洋覆盖约 71% 的地球表面，平均深度约 3734 m。大陆架—大陆坡—深海平原—洋中脊—海沟，这些形态由板块活动和沉积塑造。海槛像门槛：它限制深层通道，但不是封闭墙。深盆水是否更新，要看密度差、输运和混合。</p>
+        <ul>
+          <li>海盆、海岭与通道共同决定连通关系。</li>
+          <li>测深手段：船载声学、卫星重力、GEBCO/ETOPO 网格。</li>
+        </ul>
+      </div>
+
+      <!-- 第2周出门票 -->
+      <div class="ticket-area">
+        <div class="ticket-title">🎫 第2周出门票</div>
+        <div class="ticket-desc"><strong>本周记录：</strong>学习借助 Trae 绘图，并用代码复现海表温度图和海底年龄图。</div>
+        <div class="note-content">
+          <p><strong>【知识详述】</strong>海底地形不仅是静态的边界，更是动态水交换的控制阀。海槛（Sill）深度直接决定了深层水团能否跨越海盆进行交换，例如直布罗陀海峡的海槛决定了地中海深层水的盐度特征。在数据可视化方面，现代海洋学借助 WOA（World Ocean Atlas）等数据集可绘制全球海表温度场分布，同时通过板块构造理论可以推算并可视化海底岩石圈的年龄分布，展示大洋中脊不断扩张的动力学过程。</p>
+        </div>
+        <div class="ticket-gallery">
+          <div class="ticket-img-box">
+            <img src="./SST.png" alt="海表温度图">
+            <p>WOA 2023 年平均海表温度图 (基于 SST.png)</p>
+          </div>
+          <div class="ticket-img-box">
+            <img src="./SWPT.png" alt="海底年龄图">
+            <p>海底岩石圈年龄图 (基于 SWPT.png)</p>
+          </div>
+        </div>
+        <div class="ticket-source">本讲来源：Elsevier · 章节目录 · GEBCO · 海底地形网格</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 第3讲 -->
+  <article class="lecture-card">
+    <div class="lec-header">
+      <h3>第3讲：海水的物理性质</h3>
+      <span>2026-10-08 · 教材第3章</span>
+    </div>
+    <div class="lec-body">
+      <div class="driver-box"><strong>驱动问题：</strong>比较两团海水的轻重，为什么不能只看温度？</div>
+      <div class="note-content">
+        <h4>课堂内容</h4>
+        <p>密度由温度、盐度和压力共同决定，关系非线性。TEOS-10 区分实用盐度 S_P 和绝对盐度 S_A；名字相似，不能在程序里随意互换。判断层结看水团被推开后能否回来：N² = −(g/ρ₀)∂ρ/∂z。</p>
+      </div>
+      <div class="my-thoughts">
+        <p>我原以为冷水一定比暖水重，后来发现盐度可以把结论翻过来。位温、位密度还要注明参考压力，否则两个数根本不能直接比。</p>
+      </div>
+
+      <!-- 第3周出门票 -->
+      <div class="ticket-area">
+        <div class="ticket-title">🎫 第3周出门票</div>
+        <div class="ticket-desc"><strong>本周记录：</strong>学习 EOF 方法；用 TAO 赤道海温站点的图练习阅读空间型和时间系数。</div>
+        <div class="note-content">
+          <p><strong>【知识详述】</strong>经验正交函数（EOF）分析是物理海洋学中分离时空信号的重要数学工具。通过对时空数据矩阵进行奇异值分解（SVD），可以将复杂的原始场分解为相互正交的空间模态（EOF）及其对应的时间系数（PC）。第一模态（EOF1）通常代表了数据中方差最大的空间分布型。例如，对热带大气海洋（TAO）浮标阵列的赤道海温数据做EOF分析，能清晰分离出厄尔尼诺/拉尼娜等年际信号的空间结构（空间型）及其随时间的演变规律（时间序列），这需要严格的数据质控与去季节、去趋势预处理。</p>
+        </div>
+        <div class="ticket-source">本讲来源：NOAA TAO 数据中心 · Data analysis</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 第4讲 -->
+  <article class="lecture-card">
+    <div class="lec-header">
+      <h3>第4讲：典型分布与水团</h3>
+      <span>2026-10-15 · 教材第4章</span>
+    </div>
+    <div class="lec-body">
+      <div class="note-content">
+        <h4>课堂内容</h4>
+        <p>全球海洋平均温度约 3.5℃、平均盐度约 34.6。T-S 图把温度和盐度同时比较：一个点是一种水型，两个水团混合落在一条直线上。水团识别不能只看单一极值，还要看温盐关系、密度层位、氧/营养盐。</p>
+      </div>
+      <div class="my-thoughts">
+        <p>我原以为 T-S 图只是把温度和盐度画成散点，后来发现它是水团的“指纹”。</p>
+      </div>
+
+      <!-- 第4周出门票 -->
+      <div class="ticket-area">
+        <div class="ticket-title">🎫 第4周出门票</div>
+        <div class="ticket-desc"><strong>本周记录：</strong>梳理惯性流、地转流和 Ekman 漂流的主要概念，练习判断地转流方向。</div>
+        <div class="note-content">
+          <p><strong>【知识详述】</strong>在地球自转系统中，大尺度海流主要受水平压强梯度力与科里奥利力平衡控制，形成地转流（Geostrophic Flow）。在北半球，地转流沿着等压线流动，高压位于其右侧。当存在密度水平梯度时，会引发热成风切变。此外，表层海水在风应力作用下产生埃克曼漂流（Ekman Drift），北半球表层流向偏于风向右侧45度，垂直积分后的净输送（Ekman Transport）则偏右90度，这是解释沿岸上升流和赤道涌升的核心机制。</p>
+        </div>
+        <div class="ticket-source">本讲来源：Talley · 典型分布 I · Talley · 典型分布 II</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 第5讲 -->
+  <article class="lecture-card">
+    <div class="lec-header">
+      <h3>第5讲：质量、盐与热收支</h3>
+      <span>2026-10-22 · 教材第5章</span>
+    </div>
+    <div class="lec-body">
+      <div class="note-content">
+        <h4>课堂内容</h4>
+        <p>收支先选控制体、边界和正方向：储存变化 = 净输入 + 内部源汇。海表热交换四项：短波 Q_s、长波 Q_b、潜热 Q_e、感热 Q_h。规定进入海洋为正时，蒸发潜热通常是负项。</p>
+      </div>
+      <div class="my-thoughts">
+        <p>我原以为热通量都是海洋给大气，后来发现短波是太阳给海洋，长波、潜热、感热通常是海洋向上损失；符号一错，整个账本都会反。</p>
+      </div>
+
+      <!-- 第5周出门票 -->
+      <div class="ticket-area">
+        <div class="ticket-title">🎫 第5周出门票</div>
+        <div class="ticket-desc"><strong>本周记录：</strong>学习海洋长波和位涡守恒，梳理海洋动力过程的知识体系。</div>
+        <div class="note-content">
+          <p><strong>【知识详述】</strong>位涡（Potential Vorticity, PV）守恒是海洋动力学中最强大的约束之一。在没有摩擦和热力强迫的绝热条件下，流体柱的位涡 q = (ζ + f)/H 保持守恒。这意味着，当水柱被拉伸（H 增大，如副热带环流内区）时，相对涡度 ζ 必须增加；或者当流体向北运动（f 增大）时，水柱必须变浅。位涡守恒成功解释了西边界流的强化现象（Stommel & Munk 理论），也是理解罗斯贝波（Rossby Waves）西传机制的基础。</p>
+        </div>
+        <div class="ticket-source">本讲来源：NOAA PMEL · 上层海洋热平衡 · Talley · 上层水团形成</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 第6讲 -->
+  <article class="lecture-card">
+    <div class="lec-header">
+      <h3>第6讲：动力过程（地转与 Ekman）</h3>
+      <span>2026-10-29 · 教材第7章</span>
+    </div>
+    <div class="lec-body">
+      <div class="note-content">
+        <h4>课堂内容</h4>
+        <p>水平压强梯度先让海水加速，科氏力随速度增大并改变方向；在大尺度、低摩擦条件下两者近似平衡，形成地转流。风应力在表层驱动 Ekman 输运；风应力旋度通过 Ekman 层底的垂直运动让内区水柱伸缩，联系 Sverdrup 经向输运和西边界流。</p>
+      </div>
+
+      <!-- 第6周出门票 -->
+      <div class="ticket-area">
+        <div class="ticket-title">🎫 第6周出门票</div>
+        <div class="ticket-desc"><strong>本周记录：</strong>对照课堂材料，整理不同波动的时间尺度、波的特征，以及深水和浅水条件下的相速。</div>
+        <div class="note-content">
+          <p><strong>【知识详述】</strong>海洋波动是能量传播的重要载体。根据恢复力的不同，可分为表面重力波、内波、行星波（罗斯贝波）和潮波等。波浪的相速（c）取决于水深（h）与波长（λ）的相对关系。在深水区（h > λ/2），波速仅取决于波长（c ∝ √λ）；在浅水区（h < λ/20），波速仅取决于水深（c = √gh），海啸即是典型的浅水长波。无论深水还是浅水，水质点主要进行轨道运动，波浪传播的是能量和波形，而非水体本身的大规模向前净输运。</p>
+        </div>
+        <div class="ticket-gallery">
+          <div class="ticket-img-box">
+            <img src="./waves.png" alt="波浪时间尺度与特征">
+            <p>波动时间尺度与相速特征 (基于 waves.png)</p>
+          </div>
+        </div>
+        <div class="ticket-source">本讲来源：Talley · 波浪讲义 · NOAA · 潮汐变化</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 第7讲 -->
+  <article class="lecture-card">
+    <div class="lec-header">
+      <h3>第7讲：波动、潮汐与沿岸</h3>
+      <span>2026-10-30 (线上) · 教材第8章</span>
+    </div>
+    <div class="lec-body">
+      <div class="note-content">
+        <h4>课堂内容</h4>
+        <p>波动传播的是扰动和能量，水质点运动不等于波峰相速。线性、无旋转浅水长波：c ≈ √(gH)。这里的“浅水”是相对波长而言，不是海图上水深小。</p>
+      </div>
+
+      <!-- 第7周出门票 -->
+      <div class="ticket-area">
+        <div class="ticket-title">🎫 第7周出门票</div>
+        <div class="ticket-desc"><strong>本周记录：</strong>学习使用 AI 的注意事项，确定与自己研究主题相关的会议论文。</div>
+        <div class="note-content">
+          <p><strong>【知识详述】</strong>潮汐主要由月球和太阳的引潮力周期性强迫产生，但实际潮差和潮流还受海盆形状、水深、地转偏向力（科氏力）、底摩擦以及共振效应的影响。河口区域由于径流与海水交汇，常见淡水在上、咸水在下的层结结构，但强潮混合作用会破坏这种层结。在学术论文投稿与研究规划中，需明确区分物理机制（如波动动力学、混合过程）与观测统计结果，确保数据处理的透明度与可重复性。</p>
+        </div>
+        <div class="ticket-source">本讲来源：Talley · 数据分析 · NOAA PMEL · TAO 日平均水温</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 第8讲 -->
+  <article class="lecture-card">
+    <div class="lec-header">
+      <h3>第8讲：数据分析与观测方法</h3>
+      <span>2026-11-05 · 教材第6章</span>
+    </div>
+    <div class="lec-body">
+      <div class="note-content">
+        <h4>课堂内容</h4>
+        <p>分析从采样和质控开始：精密度是重复测量的离散程度，准确度是离真值有多近。EOF 把时空数据分解为空间模态 (EOF) 和时间系数 (PC)：X = UΣVᵀ。去季节、去趋势、面积加权会改变分析对象；报告有效样本、代码、误差和敏感性，结果才可复现。</p>
+      </div>
+
+      <!-- 第8周出门票 -->
+      <div class="ticket-area">
+        <div class="ticket-title">🎫 第8周出门票</div>
+        <div class="ticket-desc"><strong>本周记录：</strong>学习做内容的加减法，继续打磨自己的藻类水华故事会。</div>
+        <div class="note-content">
+          <p><strong>【知识详述】</strong>海洋数据的质量直接决定了科学结论的可靠性。在应用任何统计算法（如EOF分析）之前，必须进行严格的质控（QC），剔除传感器漂移、缺测编码和异常极值。相关分析不等于因果机制，EOF分解出的第一模态（EOF1）只是方差贡献最大的统计特征，不直接等同于唯一的动力机制。科学研究的可复现性要求研究者完整记录数据预处理流程（如去趋势、滤波、面积加权）、参数设置与不确定性评估。</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ================= 模块二：教材分析 ================= -->
+  <h2 class="section-title" id="textbook">教材分析 (核心提炼)</h2>
+  
+  <div class="textbook-grid">
+    <!-- Ch.1 -->
+    <div class="tb-card">
+      <div class="tb-header">
+        <div class="tb-badge">Ch.1</div>
+        <div>
+          <h3>描述性物理海洋学与尺度</h3>
+          <p>教材第1章 §1.1–1.2 · Talley et al. (2011)</p>
+        </div>
+      </div>
+      <div class="tb-formula">空间尺度：1 mm – 10,000 km<br>时间尺度：秒 – 千年</div>
+      <div class="tb-section">
+        <h4>我的解释</h4>
+        <p>读这张图的意义不是背范围，而是判断哪些项可以忽略、观测要多密。读图五问：变量与单位、时间窗、空间范围、数据来源、误差与缺测。</p>
+      </div>
+      <div class="tb-section">
+        <h4>🔗 与课堂对照</h4>
+        <p>第1讲用 Ro = U/(fL) 把“尺度”变成可算的判据；教材给全景，课上给判据。差异：教材更强调描述传统，课上更强调“可检验的问题”。</p>
+      </div>
+    </div>
+
+    <!-- Ch.3 -->
+    <div class="tb-card">
+      <div class="tb-header">
+        <div class="tb-badge" style="background:#0f766e">Ch.3</div>
+        <div>
+          <h3>海水状态方程与层结</h3>
+          <p>教材第3章 §3.2–3.5 · Talley et al. (2011)</p>
+        </div>
+      </div>
+      <div class="tb-formula">
+        ρ = ρ(S, T, p)<br><br>
+        ∂p/∂z = −ρg<br><br>
+        N² = −(g/ρ₀)(∂ρ/∂z)
+      </div>
+      <div class="tb-section">
+        <h4>我的解释</h4>
+        <p>密度不是温度的单一函数；盐度和压力会改变结论。位温/位密度要注明参考压力，TEOS-10 的 S_P 和 S_A 也不能混用。N² > 0 表示稳定回复。</p>
+      </div>
+      <div class="tb-section">
+        <h4>🔗 与课堂对照</h4>
+        <p>第3讲用 N² 判断层结；教材从状态方程和位温定义推起。差异：教材给定义链，课上给判据和算例。</p>
+      </div>
+    </div>
+
+    <!-- Ch.5 -->
+    <div class="tb-card">
+      <div class="tb-header">
+        <div class="tb-badge" style="background:#b45309">Ch.5</div>
+        <div>
+          <h3>混合层热收支</h3>
+          <p>教材第5章 §5.4–5.5 · Talley et al. (2011)</p>
+        </div>
+      </div>
+      <div class="tb-formula">
+        ρ₀ c_p h (∂T/∂t) = Q_net − advection − entrainment
+      </div>
+      <div class="tb-section">
+        <h4>我的解释</h4>
+        <p>Q_net 是短波、长波、潜热、感热之和；混合层温度还受平流、夹卷和层厚变化影响。20 m 层吸 100 W/m² 一天约升温 0.105 K。</p>
+      </div>
+      <div class="tb-section">
+        <h4>🔗 与课堂对照</h4>
+        <p>第5讲用控制体和符号约定算一遍；教材强调守恒和空间分布。差异：课上先算，教材后讲全球分布。</p>
+      </div>
+    </div>
+
+    <!-- Ch.7 -->
+    <div class="tb-card">
+      <div class="tb-header">
+        <div class="tb-badge" style="background:#4338ca">Ch.7</div>
+        <div>
+          <h3>地转、Ekman 与位涡</h3>
+          <p>教材第7章 §7.2–7.8 · Talley et al. (2011)</p>
+        </div>
+      </div>
+      <div class="tb-formula">
+        f = 2Ω sin φ<br>
+        u_g = −(g/f)η_y, v_g = (g/f)η_x<br>
+        V_Ek = τ / (ρ₀ f)<br>
+        q = (ζ + f) / H
+      </div>
+      <div class="tb-section">
+        <h4>我的解释</h4>
+        <p>地转是压强梯度与科氏力的主平衡；密度梯度给热成风切变；Ekman 输运是风应力的表层响应；位涡把厚度、相对涡度和行星涡度放进一个守恒关系。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 模块三：ENSO 故事会 ================= -->
+  <h2 class="section-title" id="enso">我的故事会 | ENSO 动力学解析</h2>
+  
+  <div class="enso-wrapper">
+    <div class="enso-header">
+      <h2>El Niño & La Niña</h2>
+      <p>The El Niño-Southern Oscillation (ENSO) is the dominant mode of interannual climate variability on Earth.</p>
+    </div>
+
+    <!-- 视频播放器 -->
+    <div class="video-container">
+      <!-- 请确保你的视频文件名为 enso.mp4，并与 index.html 放在同一目录下 -->
+      <video controls poster="https://via.placeholder.com/1200x600/071a28/38bdf8?text=ENSO+Video+Presentation">
+        <source src="./enso.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <div class="enso-grid">
+      <div class="canvas-box">
+        <canvas id="normalCanvas"></canvas>
+        <p>Neutral State: Trade winds drive warm water westward; upwelling maintains the eastern cold tongue.</p>
+      </div>
+      
+      <div class="canvas-box">
+        <canvas id="bjerknesCanvas"></canvas>
+        <p>The Bjerknes positive feedback loop (Warm Phase).</p>
+      </div>
+    </div>
+
+    <div class="canvas-box" style="margin-top: 30px;">
+      <canvas id="ensoSimCanvas" style="height: 400px;"></canvas>
+      <p>Interactive Lab: Drag the slider below to adjust the ENSO phase.</p>
+    </div>
+
+    <div class="lab-controls">
+      <label for="ensoState">ENSO Phase: <output id="stateOut">Neutral</output></label>
+      <input id="ensoState" type="range" min="-1" max="1" value="0" step="0.1">
+      
+      <div class="lab-diagnostics">
+        <div>Trade Winds: <span id="tradeWindText">Normal</span></div>
+        <div>West Thermocline: <span id="westThermocline">Normal</span></div>
+        <div>East Thermocline: <span id="eastThermocline">Normal</span></div>
+        <div>Walker Circulation: <span id="walkerText">Normal</span></div>
+        <div>Convection Center: <span id="convText">Indonesia</span></div>
+        <div>Peruvian Upwelling: <span id="upwellingText">Normal</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 免责声明 ================= -->
+  <div class="disclaimer">
+    <h3>⚠️ 制作声明与学术免责</h3>
+    <p><strong>AI 辅助制作：</strong> 本网页的 HTML/CSS 框架、JavaScript 交互逻辑以及部分 Canvas 渲染代码，在开发过程中使用了 AI 大语言模型进行辅助生成与代码优化。本人负责了内容的梳理、物理机制的解释以及参数的校准。</p>
+    <p><strong>学术用途与数据说明：</strong> 页面中的物理概念解释基于 Talley 等经典教材整理。出门票模块展示的 `SST.png`、`SWPT.png`、`waves.png` 为课程学习过程中的配图素材。所有图表（温跃层倾斜、沃克环流、SST分布等）均为 <strong>Canvas 实时渲染的概念示意动画</strong>，并非真实实时观测数据。本页面仅作为期末课程汇报与个人知识库展示使用。</p>
+    <p><strong>模型近似：</strong> 交互实验室中的物理响应采用简化的线性近似模型，旨在提供直观的视觉反馈，真实海洋与大气系统的非线性相互作用远比此复杂。</p>
+  </div>
+
+</div>
+
+<footer style="text-align: center; padding: 40px; color: #94a3b8; background: #071a28; margin-top: 60px;">
+  © 2026 描述性物理海洋 · 唐昊冉 | Final Project
+</footer>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+
+// --- Canvas 通用工具 ---
+function canvas(id){
+    const el = $(id), ctx = el?.getContext("2d");
+    if(!el || !ctx) return null;
+    let W = 0, H = 0;
+    function resize(){
+        const r = el.getBoundingClientRect();
+        if(r.width < 2 || r.height < 2) return false;
+        const d = Math.min(devicePixelRatio || 1, 2);
+        W = r.width; H = r.height;
+        const w = Math.round(W*d), h = Math.round(H*d);
+        if(el.width !== w || el.height !== h){ el.width = w; el.height = h; }
+        ctx.setTransform(d, 0, 0, d, 0, 0);
+        return true;
+    }
+    return { el, ctx, get W(){return W}, get H(){return H}, resize };
+}
+
+function base(p, title){
+    let c = p.ctx;
+    c.clearRect(0, 0, p.W, p.H);
+    c.fillStyle = "#0f172a"; // 深色底板
+    c.fillRect(0, 0, p.W, p.H);
+    c.fillStyle = "#94a3b8";
+    c.font = "12px system-ui";
+    c.fillText(title, 15, 25);
+}
+
+function arrow(c, x1, y1, x2, y2, color="#38bdf8", w=2){
+    let a = Math.atan2(y2-y1, x2-x1);
+    c.strokeStyle = color; c.fillStyle = color; c.lineWidth = w;
+    c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke();
+    c.beginPath();
+    c.moveTo(x2, y2);
+    c.lineTo(x2 - 8*Math.cos(a-.48), y2 - 8*Math.sin(a-.48));
+    c.lineTo(x2 - 8*Math.cos(a+.48), y2 - 8*Math.sin(a+.48));
+    c.closePath(); c.fill();
+}
+
+// 1. 正常态示意图
+function drawNormal(){
+    let p = canvas("normalCanvas");
+    if(!p || !p.resize()) return;
+    let { ctx: c, W, H } = p;
+    base(p, "Neutral State: Warm water west, upwelling east");
+    
+    c.fillStyle = "#071a28";
+    c.fillRect(0, H*0.6, W, H*0.4);
+    
+    c.beginPath();
+    for(let i=0; i<=100; i++){
+        let x = i/100*W;
+        let y = H*0.75 - (i/100)*H*0.2;
+        if(!i) c.moveTo(x,y); else c.lineTo(x,y);
+    }
+    c.strokeStyle = "#f59e0b";
+    c.lineWidth = 2;
+    c.setLineDash([5, 3]);
+    c.stroke();
+    c.setLineDash([]);
+
+    const grad = c.createLinearGradient(0, H*0.55, W, H*0.55);
+    grad.addColorStop(0, "#ef4444");
+    grad.addColorStop(0.7, "#f59e0b");
+    grad.addColorStop(1, "#0ea5e9");
+    c.fillStyle = grad;
+    c.fillRect(0, H*0.55, W, 10);
+
+    arrow(c, W*0.2, H*0.45, W*0.65, H*0.45, "#ef4444", 2.5);
+    c.fillStyle = "#ef4444";
+    c.font = "12px system-ui";
+    c.fillText("Trade Winds", W*0.35, H*0.42);
+
+    arrow(c, W*0.85, H*0.8, W*0.85, H*0.65, "#0ea5e9", 2);
+    c.fillStyle = "#0ea5e9";
+    c.fillText("Upwelling", W*0.78, H*0.9);
+
+    c.fillStyle = "#ef4444";
+    c.fillText("Warm Pool", W*0.05, H*0.54);
+    c.fillStyle = "#0ea5e9";
+    c.fillText("Cold Tongue", W*0.8, H*0.54);
+}
+
+// 2. Bjerknes 正反馈
+function drawBjerknes(){
+    let p = canvas("bjerknesCanvas");
+    if(!p || !p.resize()) return;
+    let { ctx: c, W, H } = p;
+    base(p, "Bjerknes Positive Feedback (Warm Phase)");
+    
+    const cx = W/2, cy = H/2, r = Math.min(W,H)*0.25;
+    c.strokeStyle = "#334155";
+    c.lineWidth = 2;
+    c.beginPath();
+    c.arc(cx, cy, r, 0, Math.PI*2);
+    c.stroke();
+    
+    const nodes = [
+        {x: cx, y: cy - r, text: "SST Warms"},
+        {x: cx + r, y: cy, text: "Winds Weaken"},
+        {x: cx, y: cy + r, text: "Thermocline Deepens"},
+        {x: cx - r, y: cy, text: "Upwelling Reduces"}
+    ];
+    
+    nodes.forEach((n, i) => {
+        c.fillStyle = "#1e293b";
+        c.strokeStyle = "#38bdf8";
+        c.lineWidth = 2;
+        c.beginPath();
+        c.arc(n.x, n.y, 40, 0, Math.PI*2);
+        c.fill();
+        c.stroke();
+        
+        c.fillStyle = "#e2e8f0";
+        c.font = "600 12px system-ui";
+        c.textAlign = "center";
+        let words = n.text.split(' ');
+        c.fillText(words[0], n.x, n.y - 4);
+        if(words[1]) c.fillText(words.slice(1).join(' '), n.x, n.y + 12);
+        
+        const next = nodes[(i+1)%4];
+        const angle = Math.atan2(next.y - n.y, next.x - n.x);
+        const startX = n.x + Math.cos(angle) * 40;
+        const startY = n.y + Math.sin(angle) * 40;
+        const endX = next.x - Math.cos(angle) * 44;
+        const endY = next.y - Math.sin(angle) * 44;
+        
+        arrow(c, startX, startY, endX, endY, "#38bdf8", 3);
+    });
+    
+    c.textAlign = "left";
+    c.fillStyle = "#f59e0b";
+    c.font = "13px system-ui";
+    c.fillText("Positive Feedback Loop", W/2 - 70, H - 15);
+}
+
+// 3. 交互实验室
+function drawLab(state){
+    let p = canvas("ensoSimCanvas");
+    if(!p || !p.resize()) return;
+    let { ctx: c, W, H } = p;
+    base(p, "Interactive ENSO Simulation");
+    
+    const isElNino = state > 0.1;
+    const isLaNina = state < -0.1;
+    
+    c.fillStyle = "#071a28";
+    c.fillRect(0, H*0.55, W, H*0.45);
+    
+    c.beginPath();
+    let westDepth = H*0.85;
+    let eastDepth = H*0.85 - state * H*0.25;
+    c.moveTo(0, westDepth);
+    c.lineTo(W, eastDepth);
+    c.strokeStyle = "#f59e0b";
+    c.lineWidth = 2;
+    c.setLineDash([5,3]);
+    c.stroke();
+    c.setLineDash([]);
+    
+    let grad = c.createLinearGradient(0, H*0.55, W, H*0.55);
+    grad.addColorStop(0, "#ef4444");
+    grad.addColorStop(0.5 + state*0.3, "#f59e0b");
+    grad.addColorStop(1, state > 0.3 ? "#f87171" : "#0ea5e9");
+    c.fillStyle = grad;
+    c.fillRect(0, H*0.55, W, 12);
+    
+    const windStrength = 1 - state * 0.8;
+    const arrowCount = 6;
+    for(let i=0; i<arrowCount; i++){
+        let x = W*0.15 + i*W*0.12;
+        let len = 30 * windStrength;
+        arrow(c, x, H*0.45, x + len, H*0.45, "#ef4444", windStrength * 2.5);
+    }
+    c.fillStyle = "#ef4444";
+    c.font = "12px system-ui";
+    c.fillText("Trade Winds", W*0.4, H*0.42);
+    
+    if(isLaNina || state === 0) {
+        const upStrength = 1 + state * 0.5;
+        arrow(c, W*0.85, H*0.8, W*0.85, H*0.8 - 25*upStrength, "#0ea5e9", 2);
+    } else if (isElNino) {
+        arrow(c, W*0.85, H*0.8, W*0.85, H*0.8 - 5, "#0ea5e9", 1);
+    }
+    
+    c.beginPath();
+    let convCenter = 0.2 - state * 0.15;
+    for(let i=0; i<=100; i++){
+        let x = i/100 * W;
+        let y = H*0.15 + Math.sin(i*0.1 + state*2) * 15;
+        if(!i) c.moveTo(x,y); else c.lineTo(x,y);
+    }
+    c.strokeStyle = "#64748b66";
+    c.lineWidth = 2;
+    c.stroke();
+    
+    c.fillStyle = "#f59e0b44";
+    c.beginPath();
+    c.arc(W*convCenter, H*0.2, 30 + Math.abs(state)*15, 0, Math.PI*2);
+    c.fill();
+    
+    $("stateOut").textContent = state > 0.1 ? "El Niño" : state < -0.1 ? "La Niña" : "Neutral";
+    $("tradeWindText").textContent = state > 0.1 ? "Weakened" : state < -0.1 ? "Stronger" : "Normal";
+    $("westThermocline").textContent = state > 0.1 ? "Slightly deeper" : state < -0.1 ? "Much deeper" : "Deep";
+    $("eastThermocline").textContent = state > 0.1 ? "Deepened" : state < -0.1 ? "Much shallower" : "Shallow";
+    $("walkerText").textContent = state > 0.1 ? "Weakened" : state < -0.1 ? "Intensified" : "Normal";
+    $("convText").textContent = state > 0.1 ? "Central Pacific" : state < -0.1 ? "Western Pacific" : "Indonesia";
+    $("upwellingText").textContent = state > 0.1 ? "Weakened" : state < -0.1 ? "Intensified" : "Normal";
+}
+
+function init(){
+    drawNormal();
+    drawBjerknes();
+    drawLab(0);
+
+    $("ensoState").addEventListener("input", (e) => {
+        drawLab(parseFloat(e.target.value));
+    });
+
+    window.addEventListener("resize", () => {
+        drawNormal();
+        drawBjerknes();
+        drawLab(parseFloat($("ensoState").value));
+    });
+}
+
+window.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>
