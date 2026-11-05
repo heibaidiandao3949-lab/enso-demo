@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="ENSO Dynamics: El Niño and La Niña - Physical Oceanography Final Presentation">
+<title>ENSO Dynamics | El Niño & La Niña</title>
+<style>
+:root{
+ --ink:#eaf4fa;--muted:#a8bfce;--dim:#6f91a4;--bg:#06131f;--bg2:#091c2b;
+ --panel:#0c2536;--panel2:#102f43;--line:#20475d;--cyan:#64e5dc;--blue:#83b8ff;
+ --gold:#ffd17a;--coral:#ff9c91;--green:#9ce2b4;--violet:#c2a8ff;--warm:#ff6b6b;
+ --max:1200px;--r:16px;--shadow:0 18px 50px #0003
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--cyan);text-decoration:none}a:hover{text-decoration:underline}
+button{font:inherit;cursor:pointer;color:var(--ink);background:#14384d;border:1px solid #2c5a71;border-radius:8px;padding:8px 16px;transition:.2s}
+button:hover{border-color:var(--cyan);background:#1a4960}
+button.active{background:var(--cyan);color:#06202a;border-color:var(--cyan);font-weight:750}
+.wrap{width:min(var(--max),calc(100% - 40px));margin:auto}
+
+/* Navigation & Hero */
+.topbar{position:sticky;top:0;z-index:30;background:#06131fe8;backdrop-filter:blur(16px);border-bottom:1px solid #214356}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:68px;flex-wrap:wrap}
+.logo{font-weight:850;letter-spacing:.1em;font-size:13px;color:var(--muted)}.logo b{color:var(--cyan)}
+.navlinks{display:flex;flex-wrap:wrap;gap:14px}.navlinks a{font-size:12.5px;color:var(--muted);transition:.2s}.navlinks a:hover{color:var(--cyan)}
+.hero{position:relative;overflow:hidden;padding:80px 0 60px;background:radial-gradient(ellipse at 80% 20%,#17607955,transparent 40%),radial-gradient(ellipse at 20% 80%,#8b2a2a44,transparent 40%),linear-gradient(145deg,#0a2638,#06131f 70%);border-bottom:1px solid var(--line)}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:40px}
+.eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--coral);font-weight:850}
+h1{font-size:clamp(36px,5vw,56px);line-height:1.1;letter-spacing:-.03em;margin:15px 0 20px;max-width:720px}
+h1 span{color:var(--cyan)}
+.lead{font-size:16px;color:#bfd1dc;max-width:680px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
+.chip{font-size:11.5px;color:#b7d0dc;border:1px solid #31546a;background:#0a2333a8;border-radius:99px;padding:5px 12px}
+.hero-visual{border:1px solid #2d5a6e;border-radius:20px;overflow:hidden;background:#071a28;box-shadow:var(--shadow)}
+.hero-visual canvas{display:block;width:100%;height:340px}
+.visual-label{padding:12px 16px;border-top:1px solid #23475a;display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:11px}
+
+/* Main Sections */
+.section{padding:70px 0;border-bottom:1px solid #173649}
+.section.alt{background:#081a28}
+.head{display:flex;align-items:end;justify-content:space-between;gap:25px;margin-bottom:35px}
+.head h2{font-size:clamp(24px,3vw,36px);line-height:1.2;letter-spacing:-.02em;margin:7px 0 0}
+.head p{max-width:540px;color:var(--muted);font-size:14px;margin:0}
+.grid{display:grid;gap:20px}
+.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.card{padding:24px;background:linear-gradient(145deg,#0e2a3b,#0a2030);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 8px 26px #0000000a}
+.card h3{font-size:18px;line-height:1.4;margin:10px 0;color:var(--gold)}
+.card p,.card li{color:var(--muted);font-size:14px}
+.num{font-size:11px;letter-spacing:.15em;color:var(--cyan);font-weight:850}
+.tag{display:inline-block;font-size:11px;border:1px solid #2a5369;color:#b7d6e2;border-radius:6px;padding:3px 8px;margin:4px 4px 0 0}
+.callout{padding:16px;border-left:3px solid var(--gold);border-radius:0 10px 10px 0;background:#ffd17a0c;color:#d9d7c6;font-size:13.5px;margin-top:16px;line-height:1.7}
+.callout.warn{border-color:var(--coral);background:#ff9c910c;color:#f0c5c0}
+.formula{font-family:"Cambria Math",Georgia,serif;font-size:18px;color:#f1fbff;background:#061824;border:1px solid #1d455b;border-radius:10px;padding:15px;text-align:center;margin:15px 0}
+.formula small{display:block;font:12px/1.6 system-ui;color:var(--muted);margin-top:6px}
+
+/* Figures & Canvas */
+.figure{margin-top:15px;border:1px solid #244b60;background:#061824;border-radius:12px;overflow:hidden}
+.figure canvas{display:block;width:100%;height:300px}
+.figure.large canvas{height:400px}
+.caption{font-size:12px;color:var(--muted);padding:0 15px 15px}
+
+/* Interactive Controls */
+.controls{display:flex;gap:15px;flex-wrap:wrap;align-items:center;margin:15px 0}
+.control{flex:1 1 200px}
+.control label{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.control input[type=range]{width:100%;accent-color:var(--cyan)}
+output{color:var(--cyan);font-weight:700}
+
+footer{padding:40px 0;color:var(--muted);font-size:12px;text-align:center;border-top:1px solid var(--line)}
+.progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--cyan);z-index:50}
+
+@media(max-width:950px){
+ .hero-grid,.two,.three{grid-template-columns:1fr}
+ .head{display:block}.head p{margin-top:12px}
+ .nav{align-items:flex-start;flex-direction:column;padding:14px 0}
+}
+@media(max-width:620px){
+ .wrap{width:calc(100% - 30px)}
+ .card{padding:18px}
+ .hero-visual canvas{height:260px}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header class="topbar">
+<div class="wrap nav">
+<a class="logo" href="#top">OCEAN <b>/</b> ENSO DYNAMICS</a>
+<nav class="navlinks" aria-label="Main Navigation">
+<a href="#intro">Introduction</a>
+<a href="#mechanism">Dynamics</a>
+<a href="#phases">Phases</a>
+<a href="#impacts">Global Impacts</a>
+<a href="#lab">Interactive Lab</a>
+</nav>
+</div>
+</header>
+
+<main id="top">
+<section class="hero">
+<div class="wrap hero-grid">
+<div>
+<div class="eyebrow">Physical Oceanography · Final Presentation</div>
+<h1>ENSO Dynamics<br><span>El Niño & La Niña</span></h1>
+<p class="lead">The El Niño-Southern Oscillation (ENSO) is the dominant mode of interannual climate variability on Earth. Originating from coupled ocean-atmosphere instabilities in the tropical Pacific, ENSO profoundly impacts global weather patterns, ecosystems, and human societies.</p>
+<div class="chips">
+<span class="chip">Ocean-Atmosphere Coupling</span>
+<span class="chip">Bjerknes Feedback</span>
+<span class="chip">Kelvin Waves</span>
+<span class="chip">Rossby Waves</span>
+<span class="chip">Walker Circulation</span>
+<span class="chip">Thermocline Adjustment</span>
+</div>
+</div>
+<div class="hero-visual">
+<canvas id="heroCanvas" aria-label="ENSO ocean-atmosphere coupling concept animation"></canvas>
+<div class="visual-label"><span>Tropical Pacific Coupled System</span><span>Warm water displacement · Convection shift</span></div>
+</div>
+</div>
+</section>
+
+<section class="section" id="intro">
+<div class="wrap">
+<div class="head">
+<div>
+<div class="kicker">01 / Fundamentals</div>
+<h2>What is ENSO?</h2>
+</div>
+<p>ENSO is not merely an oceanic phenomenon; it is a fully coupled system involving both the tropical Pacific Ocean and the overlying atmosphere.</p>
+</div>
+
+<div class="grid three">
+<article class="card">
+<div class="num">E · El Niño</div>
+<h3>Warm Phase</h3>
+<p>Anomalously warm Sea Surface Temperatures (SST) in the central and eastern equatorial Pacific. Trade winds weaken, the thermocline deepens in the east, and the Walker Circulation shifts eastward.</p>
+<span class="tag">Warm SST</span><span class="tag">Weakened Winds</span><span class="tag">Eastward Convection</span>
+</article>
+<article class="card">
+<div class="num">L · La Niña</div>
+<h3>Cold Phase</h3>
+<p>Anomalously cool SSTs in the central and eastern equatorial Pacific. Trade winds strengthen, the thermocline becomes shallower in the east, and the Walker Circulation intensifies and shifts westward.</p>
+<span class="tag">Cool SST</span><span class="tag">Strong Winds</span><span class="tag">Westward Convection</span>
+</article>
+<article class="card">
+<div class="num">S · Southern Oscillation</div>
+<h3>Atmospheric Component</h3>
+<p>A see-saw of sea level pressure between the tropical Pacific and Indian Oceans. Quantified by the Southern Oscillation Index (SOI), it is highly coupled with the oceanic SST anomalies.</p>
+<span class="tag">Pressure See-saw</span><span class="tag">SOI Index</span><span class="tag">Coupled System</span>
+</article>
+</div>
+
+<div class="grid two" style="margin-top:20px">
+<article class="card">
+<div class="num">Neutral State</div>
+<h3>The "Normal" Tropical Pacific</h3>
+<p>During neutral years, prevailing southeast trade winds pile up warm surface water in the western Pacific (Warm Pool). In the east, Ekman pumping and coastal upwelling bring cold, nutrient-rich water to the surface. The thermocline is deep in the west and shallow in the east. Atmospheric convection is anchored over the Indonesian Archipelago, forming the classic Walker Circulation.</p>
+<div class="figure">
+<canvas id="normalCanvas" aria-label="Neutral state of the tropical Pacific"></canvas>
+<div class="caption">Neutral State: Trade winds drive warm water westward; upwelling maintains the eastern cold tongue.</div>
+</div>
+</article>
+<article class="card">
+<div class="num">Monitoring & Indices</div>
+<h3>How is ENSO Quantified?</h3>
+<p>Scientists use various indices to monitor the intensity and phase of ENSO. The most critical is the Sea Surface Temperature Anomaly (SSTA) in the <strong>Niño 3.4 region</strong> (170°W-120°W, 5°S-5°N).</p>
+<div class="formula">
+ONI = 3-month running mean of Niño 3.4 SSTA
+<small>Oceanic Niño Index (ONI). ONI ≥ +0.5°C indicates El Niño; ≤ -0.5°C indicates La Niña.</small>
+</div>
+<p>Additionally, the Southern Oscillation Index (SOI), based on the pressure difference between Darwin and Tahiti, serves as a key atmospheric metric.</p>
+</article>
+</div>
+</div>
+</section>
+
+<section class="section alt" id="mechanism">
+<div class="wrap">
+<div class="head">
+<div>
+<div class="kicker">02 / Physical Mechanisms</div>
+<h2>How Does ENSO Evolve?</h2>
+</div>
+<p>The evolution of ENSO involves complex wave dynamics and ocean-atmosphere feedbacks, centered on the Bjerknes positive feedback.</p>
+</div>
+
+<div class="grid two">
+<article class="card">
+<div class="num">Core Engine</div>
+<h3>Bjerknes Positive Feedback</h3>
+<p>When the eastern equatorial Pacific SST slightly warms, the zonal SST gradient decreases, and trade winds weaken. Weakened winds reduce eastern upwelling and deepen the thermocline, further warming the SST. This is a positive feedback (amplification mechanism).</p>
+<div class="formula">
+SST↑ → Trade Winds↓ → Upwelling↓ → Thermocline Deepens → SST↑ (Positive Feedback)
+</div>
+<div class="callout warn">
+⚠️ Without negative feedback, the ocean would become unstable. The termination of ENSO relies on delayed negative feedback mechanisms.
+</div>
+</article>
+
+<article class="card">
+<div class="num">Delayed Oscillator Theory</div>
+<h3>Kelvin and Rossby Waves</h3>
+<p>Wind anomalies excite equatorial Kelvin waves (propagating eastward) and Rossby waves (propagating westward). Upon reaching the eastern Pacific, Kelvin waves deepen the thermocline and terminate the warm event. Rossby waves reflect at the western boundary into cold Kelvin waves, ultimately cooling the ocean.</p>
+<div class="figure">
+<canvas id="waveDynamicsCanvas" aria-label="Equatorial wave propagation diagram"></canvas>
+<div class="caption">Equatorial Kelvin (eastward) and Rossby (westward) waves excited by wind anomalies (conceptual).</div>
+</div>
+</article>
+</div>
+
+<div class="card" style="margin-top:20px">
+<div class="num">Coupled System</div>
+<h3>Synergy of Bjerknes Feedback and Delayed Oscillator</h3>
+<div class="figure large">
+<canvas id="bjerknesCanvas" aria-label="ENSO coupled feedback mechanism"></canvas>
+<div class="caption">The Bjerknes positive feedback during the warm phase (El Niño): Warm SST anomalies → Eastward convection shift → Weakened trade winds → Deepened thermocline → Further warming. The wave adjustment (right) provides the negative feedback for the ENSO cycle.</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="section" id="phases">
+<div class="wrap">
+<div class="head">
+<div>
+<div class="kicker">03 / Phase Comparison</div>
+<h2>El Niño vs. La Niña</h2>
+</div>
+<p>The two phases exhibit nearly mirror-image characteristics in oceanic, atmospheric, and global climate responses.</p>
+</div>
+
+<div class="grid two">
+<article class="card">
+<div class="num">El Niño · Warm Phase</div>
+<h3>Reshaping of Ocean and Atmosphere</h3>
+<ul>
+<li><strong>Ocean:</strong> Warm SST anomalies in the central/eastern equatorial Pacific, deepened thermocline, weakened coastal upwelling off Peru.</li>
+<li><strong>Atmosphere:</strong> Weakened or eastward-shifted Walker Circulation, eastward migration of convection, weakened equatorial easterlies.</li>
+<li><strong>Global:</strong> Floods in western South America, droughts in Australia and Indonesia, mild winters in North America.</li>
+</ul>
+<div class="callout">El Niño typically peaks during the Northern Hemisphere winter, exerting its most significant global impacts.</div>
+</article>
+
+<article class="card">
+<div class="num">La Niña · Cold Phase</div>
+<h3>An Intensified "Normal" State</h3>
+<ul>
+<li><strong>Ocean:</strong> Cool SST anomalies in the central/eastern equatorial Pacific, shallower thermocline, enhanced western Warm Pool.</li>
+<li><strong>Atmosphere:</strong> Intensified Walker Circulation, stronger equatorial easterlies, convection firmly anchored in the western Pacific.</li>
+<li><strong>Global:</strong> Wetter in Australia and Southeast Asia, droughts in western South America, colder/wetter in the Pacific Northwest.</li>
+</ul>
+<div class="callout">La Niña often lasts longer than El Niño and can persist for multiple years (e.g., "Double-dip La Niña").</div>
+</article>
+</div>
+
+<div class="figure large" style="margin-top:24px">
+<canvas id="phaseCompareCanvas" aria-label="SSTA comparison: El Niño vs La Niña"></canvas>
+<div class="caption">Conceptual Sea Surface Temperature Anomaly (SSTA) across the equatorial Pacific: Left (El Niño, warm), Right (La Niña, cold). The signal is most pronounced in the central and eastern Pacific.</div>
+</div>
+</div>
+</section>
+
+<section class="section alt" id="impacts">
+<div class="wrap">
+<div class="head">
+<div>
+<div class="kicker">04 / Global Impacts</div>
+<h2>ENSO Teleconnections</h2>
+</div>
+<p>Anomalies in the tropical Pacific propagate globally via atmospheric circulation (e.g., jet streams, storm tracks) and oceanic waves, profoundly impacting weather, ecology, and society.</p>
+</div>
+
+<div class="grid three">
+<article class="card">
+<div class="num">Climate Extremes</div>
+<h3>Floods and Droughts</h3>
+<p>El Niño often brings severe floods to Peru and Ecuador, while causing droughts in Indonesia and Australia. La Niña generally produces the opposite effects.</p>
+</article>
+<article class="card">
+<div class="num">Fisheries & Ecology</div>
+<h3>The Peruvian Anchovy Crisis</h3>
+<p>During El Niño, weakened upwelling reduces nutrient supply, causing a dramatic drop in Peruvian anchovy catches, with severe impacts on the global fishmeal market.</p>
+</article>
+<article class="card">
+<div class="num">Atlantic Hurricanes</div>
+<h3>Modulation by Wind Shear</h3>
+<p>During El Niño years, enhanced vertical wind shear over the tropical Atlantic suppresses hurricane development. La Niña reduces shear, favoring more active hurricane seasons.</p>
+</article>
+</div>
+
+<div class="callout warn" style="margin-top:24px">
+<strong>ENSO in a Changing Climate:</strong> How global warming will affect the intensity, frequency, and spatial pattern of ENSO is a frontier research question. Observations suggest that extreme El Niño events (e.g., 1997-98, 2015-16) may become stronger, though model projections remain highly uncertain.
+</div>
+</div>
+</section>
+
+<section class="section" id="lab">
+<div class="wrap">
+<div class="head">
+<div>
+<div class="kicker">05 / Interactive Laboratory</div>
+<h2>Adjust the ENSO State</h2>
+</div>
+<p>This interactive tool visualizes the coupled ocean-atmosphere state. Observe how trade wind intensity alters the thermocline, convection, and SST distribution.</p>
+</div>
+
+<div class="card">
+<div class="controls">
+<div class="control">
+<label for="ensoState">ENSO Phase: <output id="stateOut">Neutral</output></label>
+<input id="ensoState" type="range" min="-1" max="1" value="0" step="0.1">
+</div>
+</div>
+
+<div class="grid two">
+<div class="figure large" style="margin-top:0">
+<canvas id="ensoSimCanvas" aria-label="Interactive ENSO simulation: ocean and atmosphere state"></canvas>
+<div class="caption">Left: Ocean (thermocline, SST, upwelling). Right: Atmosphere (Walker circulation, convection).</div>
+</div>
+
+<div class="card" style="background:#071b29;border:1px dashed #2a5369">
+<h3 style="color:var(--cyan)">Physical State Diagnostics</h3>
+<div style="margin-top:15px">
+<p><strong>Equatorial Trade Winds:</strong> <span id="tradeWindText">Normal</span></p>
+<p><strong>Western Pacific Thermocline:</strong> <span id="westThermocline">Normal</span></p>
+<p><strong>Eastern Pacific Thermocline:</strong> <span id="eastThermocline">Normal</span></p>
+<p><strong>Walker Circulation:</strong> <span id="walkerText">Normal</span></p>
+<p><strong>Convection Center:</strong> <span id="convText">Indonesia-W. Pacific</span></p>
+<p><strong>Peruvian Upwelling:</strong> <span id="upwellingText">Normal</span></p>
+</div>
+<div class="callout note" style="margin-top:20px">
+💡 <strong>Instruction:</strong> Slide left (<-0.5) to simulate El Niño, and right (>0.5) for La Niña. Observe how the Walker Circulation and thermocline slope respond.
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+
+<footer>
+<div class="wrap">
+<p>Physical Oceanography Final Presentation | Interactive ENSO Atlas</p>
+<p style="color:var(--dim);margin-top:8px;font-size:11px">All visualizations are generated natively via Canvas API for conceptual demonstration and educational purposes, not real-time observational data.</p>
+</div>
+</footer>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// Canvas Utility
+function canvas(id){
+    const el = $(id), ctx = el?.getContext("2d");
+    if(!el || !ctx) return null;
+    let W = 0, H = 0;
+    function resize(){
+        const r = el.getBoundingClientRect();
+        if(r.width < 2 || r.height < 2) return false;
+        const d = Math.min(devicePixelRatio || 1, 2);
+        W = r.width; H = r.height;
+        const w = Math.round(W*d), h = Math.round(H*d);
+        if(el.width !== w || el.height !== h){ el.width = w; el.height = h; }
+        ctx.setTransform(d, 0, 0, d, 0, 0);
+        return true;
+    }
+    return { el, ctx, get W(){return W}, get H(){return H}, resize };
+}
+
+function base(p, title){
+    let c = p.ctx;
+    c.clearRect(0, 0, p.W, p.H);
+    c.fillStyle = "#061824";
+    c.fillRect(0, 0, p.W, p.H);
+    c.fillStyle = "#a8bfce";
+    c.font = "11px system-ui";
+    c.fillText(title, 14, 21);
+}
+
+function grid(c, x0, y0, x1, y1, nx=6, ny=5){
+    c.strokeStyle = "#9ab9c41a";
+    c.lineWidth = 1;
+    for(let i=0;i<=nx;i++){
+        let x = x0 + (x1-x0)*i/nx;
+        c.beginPath(); c.moveTo(x, y0); c.lineTo(x, y1); c.stroke();
+    }
+    for(let i=0;i<=ny;i++){
+        let y = y0 + (y1-y0)*i/ny;
+        c.beginPath(); c.moveTo(x0, y); c.lineTo(x1, y); c.stroke();
+    }
+}
+
+function arrow(c, x1, y1, x2, y2, color="#64e5dc", w=2){
+    let a = Math.atan2(y2-y1, x2-x1);
+    c.strokeStyle = color; c.fillStyle = color; c.lineWidth = w;
+    c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke();
+    c.beginPath();
+    c.moveTo(x2, y2);
+    c.lineTo(x2 - 8*Math.cos(a-.48), y2 - 8*Math.sin(a-.48));
+    c.lineTo(x2 - 8*Math.cos(a+.48), y2 - 8*Math.sin(a+.48));
+    c.closePath(); c.fill();
+}
+
+// 1. Hero Animation
+function drawHero(){
+    let p = canvas("heroCanvas");
+    if(!p) return;
+    let t = 0;
+    function draw(){
+        if(!p.resize()){ requestAnimationFrame(draw); return; }
+        let { ctx: c, W, H } = p;
+        c.fillStyle = "#071a28";
+        c.fillRect(0, 0, W, H);
+        
+        const grad = c.createLinearGradient(0, H*0.6, 0, H);
+        grad.addColorStop(0, "#0a2a3a");
+        grad.addColorStop(1, "#06131f");
+        c.fillStyle = grad;
+        c.fillRect(0, H*0.6, W, H*0.4);
+
+        for(let k=0; k<3; k++) {
+            c.beginPath();
+            for(let i=0; i<=200; i++){
+                let x = i/200*W;
+                let wave = Math.sin(i*0.05 + t*0.02 + k)*4;
+                let y = H*0.6 + wave + k*3;
+                if(!i) c.moveTo(x,y); else c.lineTo(x,y);
+            }
+            c.strokeStyle = k===0 ? "#64e5dc88" : "#83b8ff66";
+            c.lineWidth = 1.5;
+            c.stroke();
+        }
+
+        for(let j=0; j<4; j++){
+            c.beginPath();
+            for(let i=0; i<=200; i++){
+                let x = i/200*W;
+                let y = H*(.12 + j*.1) + Math.sin(i*.04 + t*.015 + j*.6)*8;
+                if(!i) c.moveTo(x,y); else c.lineTo(x,y);
+            }
+            c.strokeStyle = j%2 ? "#ffd17a77" : "#ff9c9177";
+            c.lineWidth = 1.2;
+            c.stroke();
+        }
+
+        const arrows = [{x: 0.1, y: 0.85}, {x: 0.25, y: 0.82}, {x: 0.5, y: 0.88}];
+        arrows.forEach(a => {
+            const px = a.x*W, py = a.y*H;
+            const offset = Math.sin(t*0.05)*3;
+            arrow(c, px, py+15+offset, px, py+offset, "#64e5dc", 2);
+        });
+
+        c.fillStyle = "#eaf4fa";
+        c.font = "700 12px system-ui";
+        c.fillText("Equatorial Pacific · Coupled System", 16, 30);
+        c.fillStyle = "#a8bfce";
+        c.font = "11px system-ui";
+        c.fillText("Warm Pool · Walker Circulation · Upwelling", 16, 48);
+
+        if(!reduced) t++;
+        requestAnimationFrame(draw);
+    }
+    draw();
+}
+
+// 2. Neutral State Diagram
+function drawNormal(){
+    let p = canvas("normalCanvas");
+    if(!p || !p.resize()) return;
+    let { ctx: c, W, H } = p;
+    base(p, "Neutral State: Warm water west, upwelling east");
+    
+    c.fillStyle = "#0a2a3a";
+    c.fillRect(0, H*0.6, W, H*0.4);
+    
+    c.beginPath();
+    for(let i=0; i<=100; i++){
+        let x = i/100*W;
+        let y = H*0.75 - (i/100)*H*0.2;
+        if(!i) c.moveTo(x,y); else c.lineTo(x,y);
+    }
+    c.strokeStyle = "#ffd17a";
+    c.lineWidth = 2;
+    c.setLineDash([5, 3]);
+    c.stroke();
+    c.setLineDash([]);
+
+    const grad = c.createLinearGradient(0, H*0.55, W, H*0.55);
+    grad.addColorStop(0, "#ff6b6b");
+    grad.addColorStop(0.7, "#ffd17a");
+    grad.addColorStop(1, "#64e5dc");
+    c.fillStyle = grad;
+    c.fillRect(0, H*0.55, W, 10);
+
+    arrow(c, W*0.2, H*0.45, W*0.65, H*0.45, "#ff9c91", 2.5);
+    c.fillStyle = "#ff9c91";
+    c.font = "11px system-ui";
+    c.fillText("Southeast Trade Winds", W*0.3, H*0.42);
+
+    arrow(c, W*0.85, H*0.8, W*0.85, H*0.65, "#64e5dc", 2);
+    c.fillStyle = "#64e5dc";
+    c.fillText("Upwelling", W*0.78, H*0.9);
+
+    c.fillStyle = "#ff6b6b";
+    c.fillText("Warm Pool", W*0.05, H*0.54);
+    c.fillStyle = "#64e5dc";
+    c.fillText("Cold Tongue", W*0.8, H*0.54);
+}
+
+// 3. Wave Dynamics
+function drawWaveDynamics(){
+    let p = canvas("waveDynamicsCanvas");
+    if(!p || !p.resize()) return;
+    let { ctx: c, W, H } = p;
+    base(p, "Equatorial Waves: Kelvin (East) & Rossby (West)");
+    
+    grid(c, 30, 40, W-20, H-30, 8, 4);
+    
+    c.beginPath();
+    for(let i=0; i<=100; i++){
+        let x = 30 + i/100*(W-50);
+        let y = H*0.35 + Math.sin(i*0.15)*10;
+        if(!i) c.moveTo(x,y); else c.lineTo(x,y);
+    }
+    c.strokeStyle = "#64e5dc";
+    c.lineWidth = 3;
+    c.stroke();
+    arrow(c, W-60, H*0.35, W-30, H*0.35, "#64e5dc", 2);
+    c.fillStyle = "#64e5dc";
+    c.font = "11px system-ui";
+    c.fillText("Kelvin Wave →", W-120, H*0.3);
+
+    c.beginPath();
+    for(let i=0; i<=100; i++){
+        let x = 30 + i/100*(W-50);
+        let y = H*0.7 + Math.sin(i*0.1 + 2)*15;
+        if(!i) c.moveTo(x,y); else c.lineTo(x,y);
+    }
+    c.strokeStyle = "#ffd17a";
+    c.lineWidth = 3;
+    c.stroke();
+    arrow(c, 40, H*0.7, 70, H*0.7, "#ffd17a", 2);
+    c.fillStyle = "#ffd17a";
+    c.fillText("← Rossby Wave", 50, H*0.65);
+
+    c.fillStyle = "#a8bfce";
+    c.font = "10px system-ui";
+    c.fillText("Western Boundary", 35, H-15);
+    c.fillText("Eastern Boundary", W-110, H-15);
+}
+
+// 4. Bjerknes Feedback Diagram
+function drawBjerknes(){
+    let p = canvas("bjerknesCanvas");
+    if(!p || !p.resize()) return;
+    let { ctx: c, W, H } = p;
+    base(p, "Bjerknes Positive Feedback (Warm Phase)");
+    
+    const cx = W/2, cy = H/2, r = Math.min(W,H)*0.28;
+    c.strokeStyle = "#2a5369";
+    c.lineWidth = 2;
+    c.beginPath();
+    c.arc(cx, cy, r, 0, Math.PI*2);
+    c.stroke();
+    
+    const nodes = [
+        {x: cx, y: cy - r, text: "SST Warms"},
+        {x: cx + r, y: cy, text: "Trade Winds Weaken"},
+        {x: cx, y: cy + r, text: "Thermocline Deepens"},
+        {x: cx - r, y: cy, text: "Upwelling Reduces"}
+    ];
+    
+    nodes.forEach((n, i) => {
+        c.fillStyle = "#0c2536";
+        c.strokeStyle = "#64e5dc";
+        c.lineWidth = 2;
+        c.beginPath();
+        c.arc(n.x, n.y, 32, 0, Math.PI*2);
+        c.fill();
+        c.stroke();
+        
+        c.fillStyle = "#eaf4fa";
+        c.font = "600 11px system-ui";
+        c.textAlign = "center";
+        c.fillText(n.text, n.x, n.y - 2);
+        c.fillStyle = "#a8bfce";
+        c.font = "9px system-ui";
+        c.fillText("(Phase " + (i+1) + ")", n.x, n.y + 12);
+        
+        // Arrows between nodes
+        const next = nodes[(i+1)%4];
+        const angle = Math.atan2(next.y - n.y, next.x - n.x);
+        const startX = n.x + Math.cos(angle) * 32;
+        const startY = n.y + Math.sin(angle) * 32;
+        const endX = next.x - Math.cos(angle) * 35;
+        const endY = next.y - Math.sin(angle) * 35;
+        
+        arrow(c, startX, startY, endX, endY, "#64e5dc", 2);
+    });
+    
+    c.textAlign = "left";
+    c.fillStyle = "#ffd17a";
+    c.font = "12px system-ui";
+    c.fillText("Positive Feedback Loop", W/2 - 65, H - 20);
+}
+
+// 5. Phase Comparison
+function drawPhaseCompare(){
+    let p = canvas("phaseCompareCanvas");
+    if(!p || !p.resize()) return;
+    let { ctx: c, W, H } = p;
+    base(p, "SSTA: El Niño (Left) vs. La Niña (Right)");
+    
+    const halfW = W/2;
+    
+    // Ocean Backgrounds
+    c.fillStyle = "#0a2a3a";
+    c.fillRect(0, H*0.55, halfW, H*0.45);
+    c.fillRect(halfW, H*0.55, halfW, H*0.45);
+    
+    // El Niño (Warm)
+    let grad1 = c.createLinearGradient(0, 0, halfW, 0);
+    grad1.addColorStop(0, "#ffd17a33");
+    grad1.addColorStop(1, "#ff6b6bbb");
+    c.fillStyle = grad1;
+    c.fillRect(0, H*0.55, halfW, 12);
+    
+    // La Niña (Cold)
+    let grad2 = c.createLinearGradient(halfW, 0, W, 0);
+    grad2.addColorStop(0, "#64e5dcbb");
+    grad2.addColorStop(1, "#83b8ff33");
+    c.fillStyle = grad2;
+    c.fillRect(halfW, H*0.55, halfW, 12);
+    
+    // Divider
+    c.strokeStyle = "#20475d";
+    c.lineWidth = 1;
+    c.beginPath();
+    c.moveTo(halfW, 0);
+    c.lineTo(halfW, H);
+    c.stroke();
+    
+    // Labels
+    c.fillStyle = "#ff6b6b";
+    c.font = "700 14px system-ui";
+    c.fillText("El Niño (Warm Phase)", 20, 40);
+    
+    c.fillStyle = "#64e5dc";
+    c.fillText("La Niña (Cold Phase)", halfW + 20, 40);
+    
+    // Thermocline slopes
+    c.beginPath();
+    c.moveTo(0, H*0.85);
+    c.lineTo(halfW, H*0.6);
+    c.strokeStyle = "#ffd17a";
+    c.lineWidth = 2;
+    c.setLineDash([5,3]);
+    c.stroke();
+    c.setLineDash([]);
+    
+    c.beginPath();
+    c.moveTo(halfW, H*0.55);
+    c.lineTo(W, H*0.85);
+    c.stroke();
+    
+    // Wind Arrows
+    arrow(c, 20, H*0.45, halfW*0.6, H*0.45, "#ff9c91", 2);
+    c.fillStyle = "#ff9c91";
+    c.fillText("Weakened Winds", halfW*0.2, H*0.42);
+    
+    arrow(c, halfW+20, H*0.45, W-20, H*0.45, "#64e5dc", 2.5);
+    c.fillStyle = "#64e5dc";
+    c.fillText("Strong Winds", halfW*1.3, H*0.42);
+}
+
+// 6. Interactive Lab Simulation
+let labAnimationId = null;
+function drawLab(state){
+    let p = canvas("ensoSimCanvas");
+    if(!p || !p.resize()) return;
+    let { ctx: c, W, H } = p;
+    base(p, "Interactive ENSO Simulation");
+    
+    const isElNino = state > 0.1;
+    const isLaNina = state < -0.1;
+    
+    // Ocean background
+    c.fillStyle = "#0a2a3a";
+    c.fillRect(0, H*0.55, W, H*0.45);
+    
+    // Thermocline slope
+    c.beginPath();
+    let westDepth = H*0.85;
+    let eastDepth = H*0.85 - state * H*0.25;
+    c.moveTo(0, westDepth);
+    c.lineTo(W, eastDepth);
+    c.strokeStyle = "#ffd17a";
+    c.lineWidth = 2;
+    c.setLineDash([5,3]);
+    c.stroke();
+    c.setLineDash([]);
+    
+    // SST gradient
+    let grad = c.createLinearGradient(0, H*0.55, W, H*0.55);
+    let warmColor = state > 0 ? "#ff6b6b" : "#ffd17a";
+    let coldColor = state < 0 ? "#64e5dc" : "#83b8ff";
+    grad.addColorStop(0, "#ff6b6b");
+    grad.addColorStop(0.5 + state*0.3, "#ffd17a");
+    grad.addColorStop(1, state > 0.3 ? "#ff9c91" : "#64e5dc");
+    c.fillStyle = grad;
+    c.fillRect(0, H*0.55, W, 12);
+    
+    // Wind Arrows
+    const windStrength = 1 - state * 0.8;
+    const arrowCount = 4;
+    for(let i=0; i<arrowCount; i++){
+        let x = W*0.2 + i*W*0.15;
+        let len = 30 * windStrength;
+        arrow(c, x, H*0.45, x + len, H*0.45, "#ff9c91", windStrength * 2.5);
+    }
+    c.fillStyle = "#ff9c91";
+    c.font = "11px system-ui";
+    c.fillText("Trade Winds", W*0.3, H*0.42);
+    
+    // Upwelling (East)
+    if(isLaNina || state === 0) {
+        const upStrength = 1 + state * 0.5;
+        arrow(c, W*0.85, H*0.8, W*0.85, H*0.8 - 20*upStrength, "#64e5dc", 2);
+    } else if (isElNino) {
+        arrow(c, W*0.85, H*0.8, W*0.85, H*0.8 - 5, "#64e5dc", 1);
+    }
+    
+    // Walker Circulation
+    c.beginPath();
+    let convCenter = 0.2 - state * 0.15;
+    for(let i=0; i<=100; i++){
+        let x = i/100 * W;
+        let y = H*0.15 + Math.sin(i*0.1 + state*2) * 10;
+        if(!i) c.moveTo(x,y); else c.lineTo(x,y);
+    }
+    c.strokeStyle = "#83b8ff66";
+    c.lineWidth = 1.5;
+    c.stroke();
+    
+    // Convection
+    c.fillStyle = "#ffd17a44";
+    c.beginPath();
+    c.arc(W*convCenter, H*0.2, 30 + Math.abs(state)*10, 0, Math.PI*2);
+    c.fill();
+    
+    // Text updates
+    $("stateOut").textContent = state > 0.1 ? "El Niño" : state < -0.1 ? "La Niña" : "Neutral";
+    $("tradeWindText").textContent = state > 0.1 ? "Weakened" : state < -0.1 ? "Stronger" : "Normal";
+    $("westThermocline").textContent = state > 0.1 ? "Slightly deeper" : state < -0.1 ? "Much deeper" : "Deep (Normal)";
+    $("eastThermocline").textContent = state > 0.1 ? "Deepened" : state < -0.1 ? "Much shallower" : "Shallow (Normal)";
+    $("walkerText").textContent = state > 0.1 ? "Weakened / Eastward Shift" : state < -0.1 ? "Intensified" : "Normal";
+    $("convText").textContent = state > 0.1 ? "Central/Eastern Pacific" : state < -0.1 ? "Western Pacific" : "Indonesia-W. Pacific";
+    $("upwellingText").textContent = state > 0.1 ? "Weakened" : state < -0.1 ? "Intensified" : "Normal";
+}
+
+function init(){
+    drawHero();
+    drawNormal();
+    drawWaveDynamics();
+    drawBjerknes();
+    drawPhaseCompare();
+    drawLab(0);
+
+    $("ensoState").addEventListener("input", (e) => {
+        drawLab(parseFloat(e.target.value));
+    });
+
+    let prog = $("progress");
+    window.addEventListener("scroll", () => {
+        let max = document.documentElement.scrollHeight - innerHeight;
+        prog.style.width = (max > 0 ? scrollY / max * 100 : 0) + "%";
+    }, { passive: true });
+}
+
+window.addEventListener("DOMContentLoaded", init);
+window.addEventListener("resize", () => {
+    drawHero();
+    drawNormal();
+    drawWaveDynamics();
+    drawBjerknes();
+    drawPhaseCompare();
+    drawLab(parseFloat($("ensoState").value));
+});
+</script>
+</body>
+</html>
